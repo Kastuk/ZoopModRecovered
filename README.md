@@ -1,2 +1,2 @@
 # ZoopModRecovered
-Recovered version of mod originally created by Elmotrix and jixxed
+Recovered Zoop mod originally made by Elmotrix &amp; jixxed
