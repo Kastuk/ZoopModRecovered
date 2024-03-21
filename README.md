@@ -18,7 +18,7 @@ Both keys can be rebinded in Stationeers/BepInEx/config/Elmotrix.jixxed.Kastuk.Z
 Installation
 =============
 1. Download last stable (I hope) release of compiled mod:
-https://github.com/Kastuk/Stationeers-Creative-Freedom/releases
+https://github.com/Kastuk/ZoopModRecovered/releases/
 2. Download last stable BepInEx release:
 https://github.com/BepInEx/BepInEx/releases
 Supposedly x64 for your Windows or unix for Linux.
