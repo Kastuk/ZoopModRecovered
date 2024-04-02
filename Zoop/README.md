@@ -1,19 +1,21 @@
 # ZoopModRecovered
-Recovered Zoop mod, which originally been made by Elmotrix and advanced by jixxed.
+Recovered Zoop mod, which originally been made by [b]Elmotrix[/b] and advanced by [b]jixxed[/b].
 
 Let you build long lines of cables, pipes or chutes between two points in one action.
 Cannot make lines longer than quantity of building materials in hand.
+Not work on client side in multiplayer.
+Not work with Authoring tool.
 
-Additions:
+[b]Additions:[/b]
 Fix for completion time, which has been same for next building action.
 Bindable keys.
 Soft dependency for CreativeFreedom mod, give access to zooping cross devices without collision checks.
 Let you cross wires and pipes without merging, to overlap networks.
 
-Using:
-While in construction mode, hold Left Shift and press primary action, then move mouse to zooping. hold primary to complete.
-Also can press Z once to start zooping without hold+click.
-Both keys can be rebinded in Stationeers/BepInEx/config/Elmotrix.jixxed.Kastuk.ZoopMod.cfg file (GUID is changed to less simple one, so file name changed too).
+[b]Using:[/b] 
+While in construction mode, hold [b]Left Shift[/b] and press primary action, then move mouse to zooping. hold primary to complete.
+Also can press [b]Z[/b] once to start zooping without hold+click.
+Both keys can be rebinded in [b]Stationeers/BepInEx/config/Elmotrix.jixxed.Kastuk.ZoopMod.cfg[/b] file (GUID is changed to less simple one, so file name changed too).
 
 Installation
 =============
@@ -32,5 +34,6 @@ https://steamcommunity.com/sharedfiles/filedetails/?id=3182410797
 Problems:
 Not work in Authoring mode yet.
 
-Works for stable version of Meson Scanner update of 2th February 2024.
-Works for stable version of Shower update of 21th March 2024
+Works for Meson Scanner update of 2th February 2024.
+Works for Shower update of 21th March 2024.
+Works for Chickens update of 27th Match 2024.

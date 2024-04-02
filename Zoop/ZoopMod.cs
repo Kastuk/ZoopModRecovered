@@ -16,15 +16,23 @@ using Assets.Scripts.GridSystem;
 using Assets.Scripts.Networking;
 using Assets.Scripts.Objects.Electrical;
 using static Assets.Scripts.Inventory.InventoryManager; //INTERESTING NEW THING
-using Assets.Scripts.Serialization;
+
 using Assets.Scripts.Objects.Items;
 using Assets.Scripts.Objects.Pipes;
+using Assets.Scripts.Sound;
 using Assets.Scripts.Util;
+
+using UnityEngine.Networking;
+using Assets.Scripts.Serialization;
+
+
 //using Assets.Scripts.Voxel;
 using Cysharp.Threading.Tasks;
 using Trading;
-using UnityEngine.Networking;
+
 using Object = System.Object; //SOMETHING NEW
+
+
 
 using CreativeFreedom;
 
@@ -197,75 +205,80 @@ namespace ZoopMod
         [UsedImplicitly]
         public static bool Prefix(InventoryManager __instance)
         {
-            Type type = Type.GetType("CreativeFreedom.CreativeFreedom, CreativeFreedom");
-            if (type != null)
+            if (GameManager.RunSimulation) //not let it work in multiplayer client, as it bring errors there
             {
-                ZoopPatch.CFree = true;
-            }
-
-            bool scrollUp = __instance.newScrollData > 0f;
-            bool scrollDown = __instance.newScrollData < 0f;
-            ZoopUtility.isZoopKeyPressed = KeyManager.GetButton(ZoopUtility.ZoopHoldKey);
-            bool secondary = KeyManager.GetMouseDown("Secondary");
-            bool primary = KeyManager.GetMouseDown("Primary");
-            bool spec = KeyManager.GetButtonDown(ZoopUtility.ZoopSwitchKey);
-            //bool place = KeyManager.GetButton(KeyMap.PrecisionPlace);
-
-            if (ZoopUtility.isZoopKeyPressed && primary || spec)
-            {
-               // Debug.Log("zoop must start now");
-                ZoopUtility.StartZoop(__instance);
-            }
-
-            //if (InventoryManager.ConstructionCursor && drop)
-            //{
-            //    __instance.CancelPlacement();
-            //}
-
-
-            if (primary && ZoopUtility.isZooping && !ZoopUtility.isZoopKeyPressed)
-            {
-                //Debug.Log("PlacementMode build has error:" + ZoopUtility.HasError);
-                if (!ZoopUtility.HasError)
+                Type type = Type.GetType("CreativeFreedom.CreativeFreedom, CreativeFreedom");
+                if (type != null)
                 {
-                    //NotAuthoringMode.Completion = true; //try not let original InventoryManager.UsePrimaryComplete override completion for Authoring Tool
-
-                    //CHANGE tried to evade authoring mode check, as zero placement time is it
-                    if (!InventoryManager.IsAuthoringMode && (double)InventoryManager.ConstructionCursor.BuildPlacementTime > 0.0)
-                    {
-                        float num1 = 1f;
-                        if ((UnityEngine.Object) InventoryManager.ParentHuman.Suit == (UnityEngine.Object) null)
-                            num1 += 0.2f; //whyyy make it longer in suit there...
-                        float num2 = Mathf.Clamp(num1, 0.2f, 5f);
-
-                        Type InventoryManagerType = typeof(InventoryManager);
-                        var method = InventoryManagerType.GetMethod("WaitUntilDone",
-                            BindingFlags.NonPublic | BindingFlags.Instance, null,
-                            new Type[] {typeof(InventoryManager.DelegateEvent), typeof(float), typeof(Structure)},
-                            null);
-                        ZoopUtility.ActionCoroutine = __instance.StartCoroutine((IEnumerator) method.Invoke(__instance,
-                            new Object[]
-                            {
-                                new InventoryManager.DelegateEvent(() => ZoopUtility.BuildZoop(__instance)),
-                                InventoryManager.ConstructionCursor.BuildPlacementTime / num2,
-                                InventoryManager.ConstructionCursor
-                            })
-                        );
-                    }
-                    else
-                        ZoopUtility.BuildZoop(__instance);
+                    ZoopPatch.CFree = true;
                 }
 
-                return !ZoopUtility.isZooping;
-            }
+                bool scrollUp = __instance.newScrollData > 0f;
+                bool scrollDown = __instance.newScrollData < 0f;
+                ZoopUtility.isZoopKeyPressed = KeyManager.GetButton(ZoopUtility.ZoopHoldKey);
+                bool secondary = KeyManager.GetMouseDown("Secondary");
+                bool primary = KeyManager.GetMouseDown("Primary");
+                bool spec = KeyManager.GetButtonDown(ZoopUtility.ZoopSwitchKey);
+                //bool place = KeyManager.GetButton(KeyMap.PrecisionPlace);
 
-            if (secondary)// || drop)
-            {
-                //Debug.Log("zoop canceled by rmb");
-                ZoopUtility.CancelZoop();
-            }
+                if (ZoopUtility.isZoopKeyPressed && primary || spec)
+                {
+                    // Debug.Log("zoop must start now");
+                    ZoopUtility.StartZoop(__instance);
+                }
 
-            return !ZoopUtility.isZoopKeyPressed;
+                //if (InventoryManager.ConstructionCursor && drop)
+                //{
+                //    __instance.CancelPlacement();
+                //}
+
+
+                if (primary && ZoopUtility.isZooping && !ZoopUtility.isZoopKeyPressed)
+                {
+                    //Debug.Log("PlacementMode build has error:" + ZoopUtility.HasError);
+                    if (!ZoopUtility.HasError)
+                    {
+                        //NotAuthoringMode.Completion = true; //try not let original InventoryManager.UsePrimaryComplete override completion for Authoring Tool
+
+                        //CHANGE tried to evade authoring mode check, as zero placement time is it
+                        if (!InventoryManager.IsAuthoringMode && (double)InventoryManager.ConstructionCursor.BuildPlacementTime > 0.0)
+                        {
+                            float num1 = 1f;
+                            if ((UnityEngine.Object)InventoryManager.ParentHuman.Suit == (UnityEngine.Object)null)
+                                num1 += 0.2f; //whyyy make it longer in suit there...
+                            float num2 = Mathf.Clamp(num1, 0.2f, 5f);
+
+                            Type InventoryManagerType = typeof(InventoryManager);
+                            var method = InventoryManagerType.GetMethod("WaitUntilDone",
+                                BindingFlags.NonPublic | BindingFlags.Instance, null,
+                                new Type[] { typeof(InventoryManager.DelegateEvent), typeof(float), typeof(Structure) },
+                                null);
+                            ZoopUtility.ActionCoroutine = __instance.StartCoroutine((IEnumerator)method.Invoke(__instance,
+                                new Object[]
+                                {
+                                new InventoryManager.DelegateEvent(() => UniTask.Run(() => ZoopUtility.BuildZoop(__instance))),//ZoopUtility.BuildZoop(__instance)),
+                        InventoryManager.ConstructionCursor.BuildPlacementTime / num2,
+                                InventoryManager.ConstructionCursor
+                                })
+                            );
+                        }
+                        else
+                            //ZoopUtility.BuildZoop(__instance);
+                            UniTask.Run(() => ZoopUtility.BuildZoop(__instance));
+                    }
+
+                    return !ZoopUtility.isZooping;
+                }
+
+                if (secondary)// || drop)
+                {
+                    //Debug.Log("zoop canceled by rmb");
+                    ZoopUtility.CancelZoop();
+                }
+
+                return !ZoopUtility.isZoopKeyPressed;
+            }
+            else return true; //let normal building work in multiplayer client too.
         }
     }
 
@@ -790,7 +803,7 @@ namespace ZoopMod
         }
 
 
-        public static void BuildZoop(InventoryManager IM)
+        public static async UniTask BuildZoop(InventoryManager IM)//public static void BuildZoop(InventoryManager IM)
         {
             
             foreach (Structure item in structures)
@@ -813,7 +826,9 @@ namespace ZoopMod
                 //        }
                 //    }
                 //}
-
+                //if (NetworkManager.IsClient) //may it need client role check to evade exceptions?
+                // disabled for clients anyway for now, as I cannot make it work in multiplayer client side
+                await UniTask.Delay(10, DelayType.Realtime);
                 UsePrimaryComplete(IM, item);
             }
             

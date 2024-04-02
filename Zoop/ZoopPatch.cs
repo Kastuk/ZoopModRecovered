@@ -19,7 +19,7 @@ namespace ZoopMod
 {
 
     //Original creators: Elmotrix & jixxed
-    [BepInPlugin("Elmotrix.jixxed.Kastuk.ZoopMod", "Zoop Mod", "21.03.2024")]
+    [BepInPlugin("Elmotrix.jixxed.Kastuk.ZoopMod", "Zoop Mod", "2024.04.01")]
     // [BepInProcess("rocketstation.exe")]
     //[BepInDependency("CreativeFreedom", BepInDependency.DependencyFlags.SoftDependency)]
     //that dependency not works with StationeersMods
@@ -73,8 +73,8 @@ namespace ZoopMod
 
         public static void Bind(ZoopPatch zm)
         {
-            HoldZoop = zm.Config.Bind("Keys", "Hold zoop key", "LeftShift", "In construction mode, hold this key then click primary action to start zooping. Possible key names can be like LeftControl or V.").Value;
-            SwitchZoop = zm.Config.Bind("Keys", "Switch zoop key", "Z", "In construction mode. press once this key to start zooping.").Value;
+            HoldZoop = zm.Config.Bind("Keys", "Hold zoop key", "LeftShift", "In construction mode, hold this key then click primary action to start zooping. Possible key names is like LeftControl or V.").Value;
+            SwitchZoop = zm.Config.Bind("Keys", "Switch zoop key", "Z", "In construction mode. press this key once to start zooping.").Value;
         }
     }
 
