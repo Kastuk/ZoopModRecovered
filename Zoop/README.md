@@ -34,6 +34,3 @@ https://steamcommunity.com/sharedfiles/filedetails/?id=3182410797
 Problems:
 Not work in Authoring mode yet.
 
-Works for Meson Scanner update of 2th February 2024.
-Works for Shower update of 21th March 2024.
-Works for Chickens update of 27th Match 2024.

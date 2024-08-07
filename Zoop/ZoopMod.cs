@@ -34,7 +34,7 @@ using Object = System.Object; //SOMETHING NEW
 
 
 
-using CreativeFreedom;
+//using creativefreedom;
 
 
 //TODO make it work in authoring mode
@@ -196,8 +196,7 @@ namespace ZoopMod
     //
     //         // return false; //false prevents placing down item
     //     }
-    // }
-
+    // }slot
     [HarmonyPatch(typeof(InventoryManager), "PlacementMode")]
     public class InventoryManagerPlacementMode
     {
@@ -207,18 +206,32 @@ namespace ZoopMod
         {
             if (GameManager.RunSimulation) //not let it work in multiplayer client, as it bring errors there
             {
-                Type type = Type.GetType("CreativeFreedom.CreativeFreedom, CreativeFreedom");
-                if (type != null)
-                {
-                    ZoopPatch.CFree = true;
-                }
+                ZoopPatch.CFree = true;
+                //try
+                //{//FileNotFoundException: Could not load file or assembly 'CreativeFreedom, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null' or one of its dependencies.
+                //    //string typeName = typeof(creativefreedom.CreativeFreedom).AssemblyQualifiedName;
+                //    //if (typeName != null)
+                //    //{ //TypeLoadException: Failure has occurred while loading a type.
+                //        Type type = Type.GetType("creativefreedom.CreativeFreedom, CreativeFreedom", false);//Type.GetType("creativefreedom.CreativeFreedom, CreativeFreedom", false, true);
+                //        if (type != null)
+                //        {
+                //            if (creativefreedom.FreedomConfig.UnlockCollisions || KeyManager.GetButton(creativefreedom.BindValidate.HoldLimitsKey))
+                //            {
+                //                ZoopPatch.CFree = true;
+                //            }
+                //            else ZoopPatch.CFree = false;
+                //        }
+                //    //}
+                //}
+                //catch (Exception)
+                //{ }
 
                 bool scrollUp = __instance.newScrollData > 0f;
                 bool scrollDown = __instance.newScrollData < 0f;
-                ZoopUtility.isZoopKeyPressed = KeyManager.GetButton(ZoopUtility.ZoopHoldKey);
+                ZoopUtility.isZoopKeyPressed = KeyManager.GetButton(ZoopPatch.ZoopHold);
                 bool secondary = KeyManager.GetMouseDown("Secondary");
                 bool primary = KeyManager.GetMouseDown("Primary");
-                bool spec = KeyManager.GetButtonDown(ZoopUtility.ZoopSwitchKey);
+                bool spec = KeyManager.GetButtonDown(ZoopPatch.ZoopSwitch);
                 //bool place = KeyManager.GetButton(KeyMap.PrecisionPlace);
 
                 if (ZoopUtility.isZoopKeyPressed && primary || spec)
@@ -244,9 +257,9 @@ namespace ZoopMod
                         if (!InventoryManager.IsAuthoringMode && (double)InventoryManager.ConstructionCursor.BuildPlacementTime > 0.0)
                         {
                             float num1 = 1f;
-                            if ((UnityEngine.Object)InventoryManager.ParentHuman.Suit == (UnityEngine.Object)null)
-                                num1 += 0.2f; //whyyy make it longer in suit there...
-                            float num2 = Mathf.Clamp(num1, 0.2f, 5f);
+                            //if (InventoryManager.ParentHuman.Suit == null)//((UnityEngine.Object)InventoryManager.ParentHuman.Suit == (UnityEngine.Object)null) //did make errors at stable update 24.04.2024
+                            //    num1 += 0.2f; //whyyy make it longer in suit there...
+                            //float num2 = Mathf.Clamp(num1, 0.2f, 5f); //nosuit make number bigger
 
                             Type InventoryManagerType = typeof(InventoryManager);
                             var method = InventoryManagerType.GetMethod("WaitUntilDone",
@@ -257,7 +270,7 @@ namespace ZoopMod
                                 new Object[]
                                 {
                                 new InventoryManager.DelegateEvent(() => UniTask.Run(() => ZoopUtility.BuildZoop(__instance))),//ZoopUtility.BuildZoop(__instance)),
-                        InventoryManager.ConstructionCursor.BuildPlacementTime / num2,
+                        InventoryManager.ConstructionCursor.BuildPlacementTime / num1,//num2, //bigger number makes it spend less time
                                 InventoryManager.ConstructionCursor
                                 })
                             );
@@ -347,8 +360,8 @@ namespace ZoopMod
 
     public class ZoopUtility
     {
-        public static KeyCode ZoopHoldKey = BindValidate.hold;//KeyCode.LeftShift;
-        public static KeyCode ZoopSwitchKey = BindValidate.switcher; //Z (previously QUantityModifier which is C, which overlap smartrotation and bring problems
+        //public static KeyCode ZoopHoldKey = BindValidate.hold;//KeyCode.LeftShift;
+        //public static KeyCode ZoopSwitchKey = BindValidate.switcher; //Z (previously QUantityModifier which is C, which overlap smartrotation and bring problems
 
         public static List<Structure> structures = new List<Structure>();
         public static List<Structure> structuresCacheStraight = new List<Structure>();
